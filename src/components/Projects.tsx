@@ -11,7 +11,7 @@ const projects = [
         tech: "Next.js, FastAPI, PostgreSQL, LangGraph, Docker",
         description: "AI-powered internship platform. Features real-time chat, role-based access for students/faculty, and GenAI-driven guidance.",
         github: "https://github.com/vaibhavGala262/InternConnect",
-        live: "https://intern-connect-virid.vercel.app"
+        live: null
     },
     {
         name: "NutShell",
