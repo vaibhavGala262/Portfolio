@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useTheme } from "@/context/ThemeContext";
 import { useSound } from "@/context/SoundContext";
 import GlitchText from "@/components/GlitchText";
+import MatrixRain from "@/components/MatrixRain";
 
 const COMMANDS = {
     help: "Available commands: help, theme, whoami, neofetch, ls, cat, clear, matrix, gui, contact, projects, about, experience",
@@ -148,9 +149,8 @@ export default function Hero() {
                 playSound("success");
                 setTimeout(toggleMode, 800);
             } else if (command === "matrix") {
-                setHistory(prev => [...prev, `> ${input}`, "Follow the white rabbit..."]);
+                setHistory(prev => [...prev, `> ${input}`, "Wake up, Neo..."]);
                 setIsMatrix(true);
-                setTimeout(() => setIsMatrix(false), 5000);
             } else if (command === "contact") {
                 setHistory(prev => [...prev, `> ${input}`, "Navigating to Contact Section..."]);
                 scrollToSection("contact");
@@ -205,13 +205,7 @@ export default function Hero() {
     // Interactive Terminal Mode
     return (
         <section className="min-h-[80vh] flex flex-col justify-center px-4 md:px-20 max-w-4xl mx-auto" onClick={() => inputRef.current?.focus()}>
-            {isMatrix && (
-                <div className="fixed inset-0 z-50 bg-black text-green-500 font-mono overflow-hidden pointer-events-none opacity-50">
-                    <div className="animate-pulse text-xs leading-3 break-all">
-                        {Array(5000).fill(0).map(() => String.fromCharCode(33 + Math.random() * 93)).join("")}
-                    </div>
-                </div>
-            )}
+            {isMatrix && <MatrixRain onExit={() => setIsMatrix(false)} />}
 
             <div className="font-mono text-lg space-y-2">
                 {history.length === 0 && (
