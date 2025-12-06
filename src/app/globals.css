@@ -1,0 +1,265 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: var(--font-fira-code);
+  --color-terminal-black: #0d1117;
+  --color-terminal-muted: #6e7681;
+  --color-terminal-dim: #161b22;
+  --color-terminal-border: #30363d;
+
+  --animate-blink: blink 1s step-end infinite;
+  --animate-typing: typing 3s steps(40, end);
+
+  @keyframes blink {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0;
+    }
+  }
+}
+
+/* Manual Theme Overrides to ensure HMR updates without Server Restart */
+@layer utilities {
+  .text-terminal-green {
+    color: var(--primary);
+  }
+
+  .text-terminal-cyan {
+    color: var(--secondary);
+  }
+
+  .bg-terminal-green {
+    background-color: var(--primary);
+  }
+
+  .bg-terminal-cyan {
+    background-color: var(--secondary);
+  }
+
+  .border-terminal-green {
+    border-color: var(--primary);
+  }
+
+  .border-terminal-cyan {
+    border-color: var(--secondary);
+  }
+
+  /* Opacity variants used in code */
+  .bg-terminal-green\/10 {
+    background-color: color-mix(in srgb, var(--primary), transparent 90%);
+  }
+
+  .bg-terminal-green\/20 {
+    background-color: color-mix(in srgb, var(--primary), transparent 80%);
+  }
+
+  .border-terminal-green\/20 {
+    border-color: color-mix(in srgb, var(--primary), transparent 80%);
+  }
+
+  .border-terminal-green\/30 {
+    border-color: color-mix(in srgb, var(--primary), transparent 70%);
+  }
+
+  .border-terminal-green\/50 {
+    border-color: color-mix(in srgb, var(--primary), transparent 50%);
+  }
+
+  .from-terminal-green {
+    --tw-gradient-from: var(--primary);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(255 255 255 / 0));
+  }
+
+  .to-terminal-cyan {
+    --tw-gradient-to: var(--secondary);
+  }
+
+  .from-terminal-green\/30 {
+    --tw-gradient-from: color-mix(in srgb, var(--primary), transparent 70%);
+  }
+
+  .to-terminal-cyan\/30 {
+    --tw-gradient-to: color-mix(in srgb, var(--secondary), transparent 70%);
+  }
+}
+
+:root {
+  /* Default Fallback */
+  --primary: #00ff00;
+  --secondary: #00d8ff;
+
+  --background: #0d1117;
+  --foreground: var(--primary);
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .animate-blink {
+    animation: blink 1s step-end infinite;
+  }
+
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .animate-glitch-1 {
+    animation: glitch-1 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+  }
+
+  .animate-glitch-2 {
+    animation: glitch-2 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+  }
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@keyframes glitch-1 {
+  0% {
+    transform: translate(0);
+    clip-path: inset(0 0 0 0);
+  }
+
+  20% {
+    transform: translate(-2px, 2px);
+    clip-path: inset(10% 0 80% 0);
+  }
+
+  40% {
+    transform: translate(2px, -2px);
+    clip-path: inset(40% 0 20% 0);
+  }
+
+  60% {
+    transform: translate(-2px, 0);
+    clip-path: inset(80% 0 5% 0);
+  }
+
+  80% {
+    transform: translate(2px, 2px);
+    clip-path: inset(20% 0 60% 0);
+  }
+
+  100% {
+    transform: translate(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes glitch-2 {
+  0% {
+    transform: translate(0);
+    clip-path: inset(0 0 0 0);
+  }
+
+  20% {
+    transform: translate(2px, -2px);
+    clip-path: inset(80% 0 5% 0);
+  }
+
+  40% {
+    transform: translate(-2px, 2px);
+    clip-path: inset(20% 0 60% 0);
+  }
+
+  60% {
+    transform: translate(2px, 0);
+    clip-path: inset(10% 0 80% 0);
+  }
+
+  80% {
+    transform: translate(-2px, -2px);
+    clip-path: inset(40% 0 20% 0);
+  }
+
+  100% {
+    transform: translate(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border: 1px solid var(--primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Utilities */
+.text-neon-shadow {
+  text-shadow: 0 0 5px var(--primary);
+}
+
+.box-border-neon {
+  border: 1px solid #30363d;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--primary), transparent 95%);
+}
+
+.box-border-neon:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--primary), transparent 80%);
+}
