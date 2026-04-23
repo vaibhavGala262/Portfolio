@@ -6,6 +6,58 @@ import { motion } from "framer-motion";
 export default function About() {
     const { mode } = useTheme();
 
+    if (mode === "3d") {
+        return (
+            <section id="about" className="py-24 px-4 relative z-10">
+                <div className="max-w-3xl mx-auto">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className="glass-hud p-6 md:p-8"
+                    >
+                        <span className="hud-label mb-4 block">ABOUT_SYSTEM.LOG</span>
+                        
+                        <div className="flex flex-col md:flex-row gap-8 items-start">
+                            {/* Avatar with cyan ring */}
+                            <div className="flex-shrink-0">
+                                <div className="avatar-ring bg-slate-800 flex items-center justify-center">
+                                    <span className="text-3xl">👨‍🚀</span>
+                                </div>
+                            </div>
+                            
+                            {/* Bio */}
+                            <div className="flex-1 space-y-4">
+                                <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                                    <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                                        About Me
+                                    </span>
+                                </h2>
+                                
+                                <p className="text-slate-300 leading-relaxed">
+                                    <span className="text-cyan-400 font-semibold">I never give up — consistency is my core trait.</span>
+                                </p>
+                                <p className="text-slate-300 leading-relaxed">
+                                    I loved Physics, Chemistry, Maths, and JEE during school. Now, I'm deeply into coding, Linux, system programming, and backend engineering.
+                                </p>
+                                <p className="text-slate-300 leading-relaxed">
+                                    I enjoy building things from scratch — shells, servers, full-stack apps. I'm a big fan of Linux, terminals, open-source, C, and Rust-style low-level thinking.
+                                </p>
+                                
+                                {/* Stats pills */}
+                                <div className="flex flex-wrap gap-3 mt-6">
+                                    <span className="stat-pill">CGPA: 8.73</span>
+                                    <span className="stat-pill">2026</span>
+                                    <span className="stat-pill">DJSCE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+        );
+    }
+
     if (mode === "gui") {
         return (
             <section id="about" className="py-24 px-4 relative z-10">

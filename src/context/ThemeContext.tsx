@@ -2,15 +2,15 @@
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-export type ThemeMode = "terminal" | "gui";
+export type ThemeMode = "terminal" | "gui" | "3d";
 export type ColorTheme = "green" | "red" | "purple" | "gold" | "blue";
 
 const THEMES: Record<ColorTheme, { primary: string; secondary: string }> = {
     green: { primary: "#00ff00", secondary: "#00d8ff" },
-    red: { primary: "#ef4444", secondary: "#f87171" }, // Red-500, Red-400
-    purple: { primary: "#d946ef", secondary: "#a855f7" }, // Fuchsia-500, Purple-500
-    gold: { primary: "#eab308", secondary: "#facc15" }, // Yellow-500, Yellow-400
-    blue: { primary: "#06b6d4", secondary: "#3b82f6" }, // Cyan-500, Blue-500
+    red: { primary: "#ef4444", secondary: "#f87171" },
+    purple: { primary: "#d946ef", secondary: "#a855f7" },
+    gold: { primary: "#eab308", secondary: "#facc15" },
+    blue: { primary: "#06b6d4", secondary: "#3b82f6" },
 };
 
 interface ThemeContextType {
@@ -27,7 +27,11 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const [colorTheme, setColorTheme] = useState<ColorTheme>("green");
 
     const toggleMode = () => {
-        setMode((prev) => (prev === "terminal" ? "gui" : "terminal"));
+        setMode((prev) => {
+            if (prev === "terminal") return "gui";
+            if (prev === "gui") return "3d";
+            return "terminal";
+        });
     };
 
     const currentColors = THEMES[colorTheme];
@@ -35,7 +39,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     return (
         <ThemeContext.Provider value={{ mode, toggleMode, colorTheme, setColorTheme }}>
             <div
-                className={mode === "gui" ? "gui-mode" : "terminal-mode"}
+                data-mode={mode}
                 data-theme={colorTheme}
                 style={{
                     "--primary": currentColors.primary,

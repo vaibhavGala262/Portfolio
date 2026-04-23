@@ -5,6 +5,7 @@ import { SoundProvider } from "@/context/SoundContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuroraBackground from "@/components/AuroraBackground";
+import CosmosBackground from "@/components/CosmosBackground";
 import CursorAura from "@/components/CursorAura";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -14,7 +15,8 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
             <CursorAura />
-            {mode === "gui" ? <AuroraBackground /> : null}
+            {mode === "gui" && <AuroraBackground />}
+            {mode === "3d" && <CosmosBackground />}
             <Navbar />
             <main className="pt-16 min-h-screen flex flex-col relative z-0">
                 {children}

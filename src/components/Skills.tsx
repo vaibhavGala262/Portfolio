@@ -58,6 +58,67 @@ export default function Skills() {
         setOpenFolders((prev) => ({ ...prev, [category]: !prev[category] }));
     };
 
+    if (mode === "3d") {
+        return (
+            <section id="skills" className="py-24 px-4 relative z-10">
+                <div className="max-w-5xl mx-auto">
+                    <div className="text-center mb-12">
+                        <span className="hud-label">SKILLS_DATABASE</span>
+                        <h2 className="text-3xl md:text-4xl font-bold mt-4 glow-heading">
+                            Technical Arsenal
+                        </h2>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {skillsData.map((skill, idx) => (
+                            <motion.div
+                                key={skill.category}
+                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                                transition={{ delay: idx * 0.08, duration: 0.4 }}
+                                whileHover={{ y: -5 }}
+                                className="glass-hud p-5"
+                            >
+                                {/* Header */}
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className={`p-2 rounded-lg ${skill.bg}`}>
+                                        <skill.icon size={20} className={skill.color} />
+                                    </div>
+                                    <h3 className="text-sm font-mono text-cyan-400 tracking-wider uppercase">
+                                        {skill.category}
+                                    </h3>
+                                </div>
+                                
+                                {/* Skill tags */}
+                                <div className="flex flex-wrap gap-2 mb-4">
+                                    {skill.items.map((item) => (
+                                        <span key={item} className="tag-glass text-xs">
+                                            {item}
+                                        </span>
+                                    ))}
+                                </div>
+                                
+                                {/* Progress bar - hardcoded per category */}
+                                <div className="progress-bar">
+                                    <div 
+                                        className="progress-fill" 
+                                        style={{ 
+                                            width: skill.category === "Programming & CS" ? "90%" :
+                                                  skill.category === "Web & Frameworks" ? "85%" :
+                                                  skill.category === "Databases" ? "75%" :
+                                                  skill.category === "GenAI & LLMs" ? "70%" :
+                                                  skill.category === "DevOps & Cloud" ? "80%" : "85%"
+                                        }} 
+                                    />
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     if (mode === "gui") {
         return (
             <section id="skills" className="py-24 px-4 relative z-10">

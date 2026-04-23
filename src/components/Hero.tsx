@@ -6,6 +6,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useSound } from "@/context/SoundContext";
 import GlitchText from "@/components/GlitchText";
 import MatrixRain from "@/components/MatrixRain";
+import HeroCosmic from "@/components/HeroCosmic"; // Keep for future use
 
 const COMMANDS = {
     help: `Available commands:
@@ -272,6 +273,79 @@ export default function Hero() {
             playSound("type"); // Typing sound
         }
     };
+
+    if (mode === "3d") {
+        return (
+            <section className="min-h-screen flex flex-col justify-center items-center text-center px-4 relative overflow-hidden scanline">
+                <div className="relative z-20 max-w-4xl">
+                    <motion.h2 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3, duration: 0.8 }}
+                        className="hud-label mb-6 uppercase"
+                    >
+                        Full Stack Developer
+                    </motion.h2>
+                    
+                    <motion.h1
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5, duration: 1 }}
+                        className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight mb-4"
+                    >
+                        <span className="bg-gradient-to-r from-cyan-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+                            VAIBHAV GALA
+                        </span>
+                    </motion.h1>
+                    
+                    <motion.p 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.8, duration: 0.8 }}
+                        className="text-base sm:text-lg text-slate-400 font-mono tracking-widest uppercase mb-8"
+                    >
+                        Full Stack Developer
+                    </motion.p>
+                    
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1, duration: 0.6 }}
+                        className="flex flex-wrap justify-center gap-4"
+                    >
+                        <a 
+                            href="#projects" 
+                            className="btn-hud btn-hud-primary"
+                        >
+                            Explore Universe
+                        </a>
+                        <a 
+                            href="#contact" 
+                            className="btn-hud"
+                        >
+                            Contact
+                        </a>
+                    </motion.div>
+                </div>
+                
+                {/* Scroll indicator */}
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.5, duration: 1 }}
+                    className="absolute bottom-8 left-1/2 -translate-x-1/2"
+                >
+                    <div className="w-6 h-10 rounded-full border border-cyan-500/30 flex justify-center pt-2">
+                        <motion.div 
+                            animate={{ y: [0, 10, 0], opacity: [1, 0.3, 1] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                            className="w-1 h-2 rounded-full bg-cyan-400"
+                        />
+                    </div>
+                </motion.div>
+            </section>
+        );
+    }
 
     if (mode === "gui") {
         return (

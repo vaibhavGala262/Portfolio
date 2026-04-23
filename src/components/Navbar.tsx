@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { useSound } from "@/context/SoundContext";
-import { Terminal, Monitor, User, Code, Briefcase, Mail, GraduationCap, Menu, X } from "lucide-react";
+import { Terminal, Monitor, User, Code, Briefcase, Mail, GraduationCap, Menu, X, Box } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -37,14 +37,17 @@ export default function Navbar() {
     };
 
     const isTerminal = mode === "terminal";
+    const is3D = mode === "3d";
 
     return (
         <>
             <nav className={`fixed z-50 transition-all duration-500 ${isTerminal
                 ? "top-0 w-full bg-[var(--bg-base)]/90 backdrop-blur-md border-b border-[var(--border-subtle)]"
-                : scrolled
-                    ? "top-0 w-full glass-card !rounded-none"
-                    : "top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl glass-card !rounded-2xl"
+                : is3D
+                    ? "top-0 w-full bg-black/80 backdrop-blur-md border-b border-cyan-500/20"
+                    : scrolled
+                        ? "top-0 w-full glass-card !rounded-none"
+                        : "top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl glass-card !rounded-2xl"
                 }`}>
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-14 sm:h-16">
@@ -107,8 +110,10 @@ export default function Navbar() {
                                     : "tag-glass border-[var(--border-subtle)] hover:border-[var(--primary)] hover:text-[var(--primary)]"
                                     }`}
                             >
-                                {isTerminal ? <Monitor size={14} /> : <Terminal size={14} />}
-                                <span className="font-mono hidden sm:inline">{isTerminal ? "GUI" : "Terminal"}</span>
+                                {isTerminal ? <Monitor size={14} /> : mode === "gui" ? <Terminal size={14} /> : <Box size={14} />}
+                                <span className="font-mono hidden sm:inline">
+                                    {isTerminal ? "GUI" : mode === "gui" ? "3D" : "Terminal"}
+                                </span>
                             </button>
                         </div>
                     </div>

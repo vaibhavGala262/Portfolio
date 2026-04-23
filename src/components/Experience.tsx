@@ -30,6 +30,89 @@ const achievements = [
 export default function Experience() {
     const { mode } = useTheme();
 
+    if (mode === "3d") {
+        return (
+            <section id="experience" className="py-24 px-4 relative z-10">
+                <div className="max-w-4xl mx-auto">
+                    <div className="text-center mb-12">
+                        <span className="hud-label">MISSION_LOGS</span>
+                        <h2 className="text-3xl md:text-4xl font-bold mt-4 glow-heading">
+                            Experience
+                        </h2>
+                    </div>
+                    
+                    {/* Timeline */}
+                    <div className="relative pl-8">
+                        <div className="timeline-line" />
+                        
+                        {workExperience.map((exp, idx) => (
+                            <motion.div 
+                                key={idx}
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ delay: idx * 0.1 }}
+                                className="glass-hud p-5 mb-6 relative"
+                            >
+                                {/* Mission label */}
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span className="hud-label">MISSION_0{idx + 1}</span>
+                                    <span className="text-cyan-400">▸</span>
+                                </div>
+                                
+                                {/* Role */}
+                                <h3 className="text-xl font-semibold mb-1">
+                                    <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                                        {exp.role}
+                                    </span>
+                                </h3>
+                                
+                                {/* Company */}
+                                <p className="text-slate-300 font-mono mb-2">{exp.company}</p>
+                                
+                                {/* Stardate */}
+                                <p className="text-sm text-cyan-400/60 font-mono mb-3">
+                                    STARDATE: {exp.period.replace(/[- ]/g, ".")}
+                                </p>
+                                
+                                {/* Description with terminal prefix */}
+                                <div className="text-slate-300 text-sm space-y-1">
+                                    <p>&gt; {exp.description}</p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                    
+                    {/* Achievements */}
+                    <div className="mt-12">
+                        <div className="text-center mb-8">
+                            <h3 className="text-xl font-semibold glow-heading">
+                                Achievements
+                            </h3>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {achievements.map((item, idx) => (
+                                <motion.div 
+                                    key={idx}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: idx * 0.05 + 0.3 }}
+                                    className="glass-hud flex items-center gap-4 p-4"
+                                >
+                                    <span className="text-2xl">{item.icon}</span>
+                                    <div>
+                                        <div className="font-semibold text-white">{item.title}</div>
+                                        <div className="text-sm text-cyan-400/80">{item.desc}</div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     if (mode === "gui") {
         return (
             <section id="experience" className="py-24 px-4 relative z-10">

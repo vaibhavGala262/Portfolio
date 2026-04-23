@@ -24,6 +24,56 @@ const educationData = [
 export default function Education() {
     const { mode } = useTheme();
 
+    if (mode === "3d") {
+        return (
+            <section id="education" className="py-24 px-4 relative z-10">
+                <div className="max-w-3xl mx-auto">
+                    <div className="text-center mb-12">
+                        <span className="hud-label">ACADEMY_LOGS</span>
+                        <h2 className="text-3xl md:text-4xl font-bold mt-4 glow-heading">
+                            Education
+                        </h2>
+                    </div>
+                    
+                    <div className="space-y-6">
+                        {educationData.map((edu, idx) => (
+                            <motion.div 
+                                key={idx}
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ delay: idx * 0.1 }}
+                                className={`glass-hud p-6 ${idx === 0 ? "planet-gold" : "planet-blue"}`}
+                            >
+                                {/* Institution */}
+                                <h3 className="text-xl font-bold mb-2">
+                                    <span className="bg-gradient-to-r from-amber-400 to-cyan-400 bg-clip-text text-transparent">
+                                        {edu.institution}
+                                    </span>
+                                </h3>
+                                
+                                {/* Degree & Location */}
+                                <p className="text-slate-300 mb-4">{edu.degree}</p>
+                                
+                                {/* Stats pills */}
+                                <div className="flex flex-wrap gap-3">
+                                    <span className="stat-pill border-amber-500/30 text-amber-400">
+                                        {edu.period}
+                                    </span>
+                                    <span className="stat-pill border-cyan-500/30 text-cyan-400">
+                                        {edu.cgpa}
+                                    </span>
+                                    <span className="stat-pill">
+                                        {edu.location}
+                                    </span>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     if (mode === "gui") {
         return (
             <section id="education" className="py-24 px-4 relative z-10">
