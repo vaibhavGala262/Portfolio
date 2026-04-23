@@ -2,42 +2,96 @@
 
 import { useTheme } from "@/context/ThemeContext";
 import { motion } from "framer-motion";
+import { Briefcase, Award } from "lucide-react";
+
+const workExperience = [
+    {
+        company: "Aahaanya Creatives",
+        role: "Freelance Web Developer",
+        period: "June 2025 - Sept 2025",
+        description: "Built production-ready Next.js website with SSR for SEO. Integrated GCP NoSQL database, AWS S3 media storage, end-to-end deployment."
+    },
+    {
+        company: "Prism",
+        role: "Co-Founder (Tech)",
+        period: "June 2025 - Present",
+        description: "Leading backend architecture for AI image sharing app. Designed scalable cloud infrastructure on AWS, Cloudflare, Supabase. Engineered secure integrations."
+    }
+];
+
+const achievements = [
+    { title: "JEE Main 2023", desc: "AIR 6934 (99.4 percentile, top 0.6%)", icon: "🏆" },
+    { title: "JEE Advanced 2023", desc: "AIR 11640 (top 6.5%)", icon: "⭐" },
+    { title: "Operating Systems", desc: "99/100 (Highest in batch of 206)", icon: "📚" },
+    { title: "CodeChef", desc: "3-Star (Max 1627, top 10%)", icon: "👨‍💻" },
+    { title: "LeetCode", desc: "400+ Problems Solved", icon: "🧠" }
+];
 
 export default function Experience() {
     const { mode } = useTheme();
 
     if (mode === "gui") {
         return (
-            <section id="experience" className="py-20 px-4 relative z-10">
-                <div className="max-w-4xl mx-auto space-y-20">
+            <section id="experience" className="py-24 px-4 relative z-10">
+                <div className="max-w-4xl mx-auto space-y-16">
 
-                    {/* Experience */}
-
+                    {/* Work Experience */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                    >
+                        <h2 className="text-4xl font-bold mb-10 text-center text-gradient flex items-center justify-center gap-3">
+                            <Briefcase className="w-8 h-8" /> Experience
+                        </h2>
+                        <div className="space-y-5">
+                            {workExperience.map((exp, idx) => (
+                                <motion.div 
+                                    key={idx} 
+                                    initial={{ opacity: 0, x: -20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: idx * 0.1 }}
+                                    className="glass-card p-5"
+                                >
+                                    <div className="flex justify-between items-start mb-3 flex-wrap gap-2">
+                                        <div>
+                                            <h3 className="text-xl font-semibold text-white">{exp.role}</h3>
+                                            <p className="text-[var(--secondary)]">{exp.company}</p>
+                                        </div>
+                                        <span className="text-sm font-mono text-[var(--text-muted)] px-3 py-1 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+                                            {exp.period}
+                                        </span>
+                                    </div>
+                                    <p className="text-[var(--text-secondary)]">{exp.description}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </motion.div>
 
                     {/* Achievements */}
                     <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
                     >
-                        <h2 className="text-4xl font-bold mb-10 text-center text-white">Achievements</h2>
+                        <h2 className="text-4xl font-bold mb-10 text-center text-gradient flex items-center justify-center gap-3">
+                            <Award className="w-8 h-8" /> Achievements
+                        </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {[
-                                { title: "JEE Main 2023", desc: "AIR 6934 (99.4 percentile)", icon: "🏆" },
-                                { title: "JEE Advanced 2023", desc: "AIR 11640", icon: "⭐" },
-                                { title: "MHT-CET 2023", desc: "99.3 percentile", icon: "🚀" },
-                                { title: "CodeChef", desc: "3-Star (Max 1627)", icon: "👨‍💻" },
-                                { title: "LeetCode", desc: "400+ Problems Solved", icon: "🧠" }
-                            ].map((item, idx) => (
-                                <div key={idx} className="group relative flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5 hover:bg-white/10 overflow-hidden transition-colors">
-                                    {/* Glow Effect */}
-                                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/10 to-[var(--secondary)]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                                    <span className="relative z-10 text-2xl group-hover:scale-110 transition-transform duration-300">{item.icon}</span>
-                                    <div className="relative z-10">
-                                        <div className="font-bold text-white group-hover:text-[var(--primary)] transition-colors">{item.title}</div>
+                            {achievements.map((item, idx) => (
+                                <motion.div 
+                                    key={idx}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: idx * 0.05 + 0.3 }}
+                                    whileHover={{ scale: 1.02 }}
+                                    className="glass-card flex items-center gap-4 p-4"
+                                >
+                                    <span className="text-3xl">{item.icon}</span>
+                                    <div>
+                                        <div className="font-semibold text-white">{item.title}</div>
                                         <div className="text-sm text-[var(--secondary)]">{item.desc}</div>
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
                         </div>
                     </motion.div>
@@ -49,6 +103,26 @@ export default function Experience() {
     return (
         <section id="experience" className="py-20 px-4 md:px-20 max-w-5xl mx-auto">
 
+            {/* Work Experience Terminal */}
+            <div className="mb-12">
+                <div className="mb-6 flex items-center gap-2">
+                    <span className="text-terminal-cyan">➜</span>
+                    <span className="text-terminal-green">~</span>
+                    <span className="text-white">cat experience.txt</span>
+                </div>
+
+                <div className="space-y-4 font-mono">
+                    {workExperience.map((exp, idx) => (
+                        <div key={idx} className="border border-terminal-muted/30 p-4 hover:bg-white/5 transition-colors">
+                            <div className="flex justify-between text-terminal-green mb-2">
+                                <span>{exp.role} @ {exp.company}</span>
+                                <span className="text-terminal-muted">{exp.period}</span>
+                            </div>
+                            <div className="text-terminal-muted text-sm">{exp.description}</div>
+                        </div>
+                    ))}
+                </div>
+            </div>
 
             {/* Achievements */}
             <div>
@@ -80,8 +154,8 @@ export default function Experience() {
                             </tr>
                             <tr className="hover:bg-white/5 transition-colors">
                                 <td className="p-3 border-b border-terminal-muted/30 text-terminal-muted">0x03</td>
-                                <td className="p-3 border-b border-terminal-muted/30">MHT-CET 2023</td>
-                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-cyan">99.3%ile</td>
+                                <td className="p-3 border-b border-terminal-muted/30">Operating Systems</td>
+                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-cyan">99/100 (Highest in batch)</td>
                             </tr>
                             <tr className="hover:bg-white/5 transition-colors">
                                 <td className="p-3 border-b border-terminal-muted/30 text-terminal-muted">0x04</td>

@@ -3,6 +3,7 @@ import About from "@/components/About";
 import Skills from "@/components/Skills";
 import Projects from "@/components/Projects";
 import Experience from "@/components/Experience";
+import Education from "@/components/Education";
 
 export default function Home() {
     return (
@@ -12,6 +13,9 @@ export default function Home() {
             </section>
             <section id="about">
                 <About />
+            </section>
+            <section id="education">
+                <Education />
             </section>
             <section id="skills">
                 <Skills />

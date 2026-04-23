@@ -7,40 +7,47 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const skillsData = [
     {
-        category: "Programming",
+        category: "Programming & CS",
         icon: Cpu,
-        items: ["C", "Java", "Python"],
+        items: ["C", "Java", "Python", "Data Structures", "Algorithms", "OOP"],
         color: "text-green-400",
         bg: "bg-green-500/10"
     },
     {
-        category: "Web",
+        category: "Web & Frameworks",
         icon: Globe,
-        items: ["React", "Next.js", "FastAPI", "Flask"],
+        items: ["React", "Next.js", "TypeScript", "Vite", "FastAPI", "Flask", "Spring Boot"],
         color: "text-cyan-400",
         bg: "bg-cyan-500/10"
     },
     {
         category: "Databases",
         icon: Database,
-        items: ["PostgreSQL", "MongoDB", "MySQL"],
+        items: ["PostgreSQL", "MySQL", "MongoDB", "Supabase", "Redis", "ChromaDB"],
         color: "text-emerald-400",
         bg: "bg-emerald-500/10"
     },
     {
-        category: "GenAI",
+        category: "GenAI & LLMs",
         icon: Cpu,
-        items: ["LangChain", "LangGraph", "MCP"],
-        color: "text-teal-400",
-        bg: "bg-teal-500/10"
+        items: ["LangChain", "LangGraph", "MCP", "HuggingFace", "LLaMA", "Gemini", "DeepSeek"],
+        color: "text-purple-400",
+        bg: "bg-purple-500/10"
     },
     {
-        category: "DevTools",
+        category: "DevOps & Cloud",
         icon: Wrench,
-        items: ["Git", "Docker", "VS Code", "Linux"],
+        items: ["Git", "Docker", "AWS", "GCP", "Firebase", "Vercel", "Render"],
+        color: "text-orange-400",
+        bg: "bg-orange-500/10"
+    },
+    {
+        category: "Dev Tools",
+        icon: Folder,
+        items: ["VS Code", "Postman", "Linux", "ApacheBench", "Prometheus"],
         color: "text-green-300",
         bg: "bg-green-400/10"
-    },
+    }
 ];
 
 export default function Skills() {
@@ -53,37 +60,34 @@ export default function Skills() {
 
     if (mode === "gui") {
         return (
-            <section id="skills" className="py-20 px-4 relative z-10">
+            <section id="skills" className="py-24 px-4 relative z-10">
                 <div className="max-w-6xl mx-auto">
                     <motion.h2
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        className="text-4xl font-bold mb-12 text-center text-white"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        className="text-4xl md:text-5xl font-bold mb-12 text-center text-gradient"
                     >
                         Technical Arsenal
                     </motion.h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                         {skillsData.map((skill, idx) => (
                             <motion.div
                                 key={skill.category}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: idx * 0.1 }}
+                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                                transition={{ delay: idx * 0.08, duration: 0.4 }}
                                 whileHover={{ y: -5 }}
-                                className="group relative bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 overflow-hidden hover:bg-white/10 transition-colors"
+                                className="glass-card group p-5"
                             >
-                                {/* Glow Effect - Subtle 5% opacity to match "Selected Works" or be softer */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/5 to-[var(--secondary)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                                <div className="relative z-10 flex items-center gap-3 mb-4">
+                                <div className="flex items-center gap-3 mb-4">
                                     <div className={`p-2 rounded-lg ${skill.bg}`}>
-                                        <skill.icon size={24} className={skill.color} />
+                                        <skill.icon size={22} className={skill.color} />
                                     </div>
-                                    <h3 className="text-xl font-bold text-white group-hover:text-[var(--primary)] transition-colors">{skill.category}</h3>
+                                    <h3 className="text-lg font-semibold text-white group-hover:text-gradient transition-colors">{skill.category}</h3>
                                 </div>
-                                <div className="relative z-10 flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-2">
                                     {skill.items.map((item) => (
-                                        <span key={item} className="px-3 py-1 bg-white/5 text-gray-300 rounded-full text-sm font-medium border border-white/5 hover:border-white/20 hover:text-[var(--primary)] transition-colors cursor-default">
+                                        <span key={item} className="tag-glass">
                                             {item}
                                         </span>
                                     ))}
@@ -144,7 +148,7 @@ export default function Skills() {
             </div>
 
             <div className="mt-8 text-terminal-muted text-sm">
-                <p>4 directories, {skillsData.reduce((acc, curr) => acc + curr.items.length, 0)} files</p>
+                <p>6 directories, {skillsData.reduce((acc, curr) => acc + curr.items.length, 0)} files</p>
             </div>
         </section>
     );

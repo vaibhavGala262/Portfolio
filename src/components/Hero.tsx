@@ -8,21 +8,82 @@ import GlitchText from "@/components/GlitchText";
 import MatrixRain from "@/components/MatrixRain";
 
 const COMMANDS = {
-    help: "Available commands: help, theme, whoami, neofetch, ls, cat, clear, matrix, gui, contact, projects, about, experience",
-    whoami: "Vaibhav Gala - System Developer & Architect",
+    help: `Available commands:
+  help        - Show this help message
+  whoami      - About me
+  about      - About section
+  education  - Education details
+  skills     - Technical skills
+  projects   - My projects
+  experience - Work experience
+  neofetch   - System info
+  theme      - Change color [green|red|purple|gold|blue]
+  matrix     - Enter the Matrix
+  gui        - Switch to GUI Mode
+  contact    - Contact info
+  clear      - Clear terminal`,
+    whoami: "Vaibhav Gala - System Developer & Architect | B.Tech CS @ DJ Sanghvi (CGPA 8.73)",
     contact: "Email: vaibhavgala262@gmail.com | LinkedIn: Vaibhav Gala | GitHub: @vaibhavGala262",
-    ls: "about.txt  skills/  projects/  experience.log  start.sh",
+    ls: "about.txt  education.txt  skills/  projects/  experience.log  start.sh",
+    skills: `
+=== TECHNICAL ARSENAL ===
+
+[Programming & CS]
+  C, Java, Python, DSA, Algorithms, OOP
+
+[Web & Frameworks]  
+  React, Next.js, TypeScript, Vite, FastAPI, Flask, Spring Boot
+
+[Databases]
+  PostgreSQL, MySQL, MongoDB, Supabase, Redis, ChromaDB
+
+[GenAI & LLMs]
+  LangChain, LangGraph, MCP, HuggingFace, LLaMA, Gemini, DeepSeek
+
+[DevOps & Cloud]
+  Git, Docker, AWS, GCP, Firebase, Vercel, Render
+`,
+    projects: `
+=== SELECTED WORKS ===
+
+[1] InternConnect     - AI internship platform (Next.js, FastAPI, LangGraph)
+[2] NutShell         - Unix shell in C (pipelines, I/O redirection)
+[3] SnapLink         - URL shortener (2.8M redirects/day, Redis cache)
+[4] Viper            - HTTP server in C (epoll, 50k+ concurrent)
+
+Type 'projects --details' for more info
+`,
+    education: `
+=== EDUCATION ===
+
+[1] B.Tech CS @ DJ Sanghvi College
+    CGPA: 8.73 | Aug 2023 - Present
+
+[2] HSC (PCM) @ Mithibai College
+    Score: 89.67% | Aug 2021 - May 2023
+`,
+    experience: `
+=== EXPERIENCE ===
+
+[1] Aahaanya Creatives | Freelance Web Developer
+    Jun 2025 - Sept 2025
+    Next.js SSR, GCP NoSQL, AWS S3
+
+[2] Prism (Co-Founder - Tech)
+    Jun 2025 - Present
+    AI image sharing app, AWS, Supabase, FastAPI
+`,
     gui: "Switching to God Mode...",
     clear: "CLEAR",
     matrix: "Wake up, Neo...",
     neofetch: `
-       /\\        OS: PortfolioOS v1.0
-      /  \\       Kernel: Linux 6.8.0
-     / /\\ \\      Uptime: 24 years
-    / /  \\ \\     Shell: zsh 5.9
-   / /    \\ \\    Resolution: 1920x1080
-  / /      \\ \\   Theme: Cyberpunk Neon
- /_/        \\_\\  Font: Fira Code
+        /\\        OS: PortfolioOS v2.0
+       /  \\       Kernel: Linux 6.8.0
+      / /\\ \\      Uptime: 21 years
+     / /  \\ \\     Shell: NutShell v1.0
+    / /    \\ \\    Resolution: 1920x1080
+   / /      \\ \\   Theme: Cyberpunk Neon
+  /_/        \\_\\  Font: Fira Code | CPU: 2.8M req/day
 `
 };
 
@@ -79,7 +140,6 @@ export default function Hero() {
     const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             const cmd = input.trim(); // Keep case for file contents
-            const lowerCmd = cmd.toLowerCase();
             const args = cmd.split(" ");
             const command = args[0].toLowerCase();
 
@@ -152,17 +212,52 @@ export default function Hero() {
                 setHistory(prev => [...prev, `> ${input}`, "Wake up, Neo..."]);
                 setIsMatrix(true);
             } else if (command === "contact") {
-                setHistory(prev => [...prev, `> ${input}`, "Navigating to Contact Section..."]);
+                setHistory(prev => [...prev, `> ${input}`, COMMANDS.contact]);
                 scrollToSection("contact");
             } else if (command === "projects") {
-                setHistory(prev => [...prev, `> ${input}`, "Loading Projects..."]);
+                const detailFlag = args[1] === "--details";
+                const projectsDetail = `=== DETAILED PROJECT INFO ===
+
+[1] InternConnect
+    Stack: Next.js, FastAPI, PostgreSQL, LangGraph, Supabase, WebSocket
+    Features: AI chatbot, real-time chat, Excel export
+    Links: https://github.com/vaibhavGala262/InternConnect
+
+[2] NutShell
+    Stack: C, POSIX, GNU Readline, Makefile
+    Features: Pipelines, I/O redirection, fork/exec/wait
+    Links: https://github.com/vaibhavGala262/NutShell
+
+[3] SnapLink
+    Stack: Spring Boot, Kafka, Redis, PostgreSQL, Prometheus
+    Stats: 2.8M redirects/day, 100% Redis cache hit
+    Links: https://github.com/vaibhavGala262/SnapLink
+
+[4] Viper
+    Stack: C, Epoll, Makefile, ApacheBench
+    Stats: 50k+ concurrent, 3.9s response time
+    Links: https://github.com/vaibhavGala262/Viper
+`;
+                setHistory(prev => [...prev, `> ${input}`, detailFlag ? projectsDetail : COMMANDS.projects]);
                 scrollToSection("projects");
             } else if (command === "about" || command === "whoami") {
                 setHistory(prev => [...prev, `> ${input}`, COMMANDS.whoami]);
                 scrollToSection("about");
-            } else if (command === "experience") {
-                setHistory(prev => [...prev, `> ${input}`, "Loading Experience Log..."]);
+            } else if (command === "education") {
+                setHistory(prev => [...prev, `> ${input}`, COMMANDS.education]);
+                scrollToSection("education");
+            } else if (command === "skills") {
+                setHistory(prev => [...prev, `> ${input}`, COMMANDS.skills]);
+                scrollToSection("skills");
+            } else if (command === "experience" || command === "exp") {
+                setHistory(prev => [...prev, `> ${input}`, COMMANDS.experience]);
                 scrollToSection("experience");
+            } else if (command === "run") {
+                // run command - simulate running stuff
+                setHistory(prev => [...prev, `> ${input}`, "Executing..."]);
+                setTimeout(() => {
+                    setHistory(prev => [...prev, "[✓] Build successful", "[✓] Tests passed", "System ready!"]);
+                }, 500);
             } else if (COMMANDS[command as keyof typeof COMMANDS]) {
                 setHistory(prev => [...prev, `> ${input}`, COMMANDS[command as keyof typeof COMMANDS]]);
             } else if (cmd === "") {
@@ -182,21 +277,68 @@ export default function Hero() {
         return (
             <section className="min-h-screen flex flex-col justify-center items-center text-center px-4 relative overflow-hidden">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="relative z-10"
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="relative z-10 max-w-4xl"
                 >
-                    <div className="mb-4 inline-block px-4 py-1.5 rounded-full border border-terminal-green/20 bg-terminal-green/10 backdrop-blur-md text-sm text-terminal-green font-mono font-medium">
-                        System Developer & Architect
-                    </div>
+                    {/* Aurora badge */}
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                        className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] backdrop-blur-md text-sm font-mono font-medium"
+                    >
+                        <span className="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse" />
+                        <span className="text-[var(--text-secondary)]">System Developer & Architect</span>
+                    </motion.div>
+                    
+                    {/* Name with gradient */}
                     <GlitchText
                         text="VAIBHAV GALA"
-                        className="text-6xl md:text-9xl font-extrabold mb-6 tracking-tighter mix-blend-overlay text-white opacity-90 block"
+                        className="text-7xl md:text-9xl font-bold mb-6 tracking-tight block text-gradient"
                     />
-                    <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
-                        Crafting scalable systems with <span className="text-terminal-green font-bold">Linux</span>, <span className="text-terminal-cyan font-bold">C</span>, and <span className="text-terminal-green font-bold">Modern Web Tech</span>.
-                    </p>
+                    
+                    {/* Tagline */}
+                    <motion.p 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4, duration: 0.8 }}
+                        className="text-xl md:text-2xl text-[var(--text-secondary)] max-w-2xl mx-auto font-light leading-relaxed"
+                    >
+                        Building scalable systems with <span className="text-[var(--primary)] font-semibold">Linux</span>, <span className="text-[var(--secondary)] font-semibold">C</span>, and <span className="text-[var(--accent)] font-semibold">Modern Web Tech</span>.
+                    </motion.p>
+                    
+                    {/* CTA Buttons */}
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6, duration: 0.6 }}
+                        className="flex flex-wrap justify-center gap-4 mt-10"
+                    >
+                        <a href="#projects" className="btn-glow">
+                            View Projects
+                        </a>
+                        <a href="#contact" className="btn-ghost">
+                            Get In Touch
+                        </a>
+                    </motion.div>
+                </motion.div>
+                
+                {/* Scroll indicator */}
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1, duration: 1 }}
+                    className="absolute bottom-10 left-1/2 -translate-x-1/2"
+                >
+                    <div className="w-6 h-10 rounded-full border-2 border-[var(--border-subtle)] flex justify-center pt-2">
+                        <motion.div 
+                            animate={{ y: [0, 12, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                            className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]"
+                        />
+                    </div>
                 </motion.div>
             </section>
         );
