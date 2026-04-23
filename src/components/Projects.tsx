@@ -43,6 +43,89 @@ const projects = [
 export default function Projects() {
     const { mode } = useTheme();
 
+    const projectsWithPlanets = [
+        { ...projects[2], planet: "Rust Moon", color: "#f97316", colorClass: "planet-orange" }, // SnapLink
+        { ...projects[3], planet: "Code Earth", color: "#22c55e", colorClass: "planet-green" }, // Viper
+        { ...projects[0], planet: "Vaibhav Prime", color: "#ef4444", colorClass: "planet-red" }, // InternConnect
+        { ...projects[1], planet: "Backend Ice", color: "#06b6d4", colorClass: "planet-cyan" }, // NutShell
+    ];
+
+    if (mode === "3d") {
+        return (
+            <section id="projects" className="py-24 px-4 relative z-10">
+                <div className="max-w-5xl mx-auto">
+                    <div className="text-center mb-12">
+                        <span className="hud-label">MISSION_LOGS</span>
+                        <h2 className="text-3xl md:text-4xl font-bold mt-4 glow-heading">
+                            Selected Works
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {projectsWithPlanets.map((project, index) => (
+                            <motion.div
+                                key={project.name}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1, duration: 0.5 }}
+                                whileHover={{ y: -5 }}
+                                className={`glass-hud p-6 ${project.colorClass}`}
+                            >
+                                {/* Planet header */}
+                                <div className="flex items-center gap-3 mb-4">
+                                    <span 
+                                        className="planet-dot" 
+                                        style={{ backgroundColor: project.color, color: project.color }}
+                                    />
+                                    <span className="hud-label">
+                                        MISSION: {project.planet}
+                                    </span>
+                                </div>
+                                
+                                {/* Project name */}
+                                <h3 className="text-2xl font-bold text-white mb-2">
+                                    {project.name}
+                                </h3>
+                                
+                                {/* Tech stack */}
+                                <p className="font-mono text-sm text-cyan-400/80 mb-4">
+                                    {project.tech}
+                                </p>
+                                
+                                {/* Description */}
+                                <p className="text-slate-300 mb-6 leading-relaxed text-sm">
+                                    {project.description}
+                                </p>
+                                
+                                {/* Tech tags */}
+                                <div className="flex flex-wrap gap-2 mb-4">
+                                    {project.tech.split(", ").slice(0, 4).map((tech) => (
+                                        <span key={tech} className="tag-glass text-xs">
+                                            {tech}
+                                        </span>
+                                    ))}
+                                </div>
+                                
+                                {/* Action button */}
+                                {project.github && (
+                                    <a 
+                                        href={project.github}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn-hud inline-flex items-center gap-2"
+                                    >
+                                        <ExternalLink size={14} />
+                                        LAUNCH
+                                    </a>
+                                )}
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     if (mode === "gui") {
         return (
             <section id="projects" className="py-24 px-4 relative z-10">

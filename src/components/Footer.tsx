@@ -30,6 +30,55 @@ export default function Footer() {
         }
     ];
 
+    if (mode === "3d") {
+        return (
+            <footer id="contact" className="py-12 sm:py-16 mt-20 relative z-10 border-t border-cyan-500/20">
+                <div className="max-w-4xl mx-auto px-4">
+                    {/* HUD Label */}
+                    <div className="text-center mb-8">
+                        <span className="hud-label">ESTABLISH_COMMS</span>
+                        <h2 className="text-2xl md:text-3xl font-bold mt-4 glow-heading">
+                            Contact
+                        </h2>
+                    </div>
+                    
+                    {/* Link rows */}
+                    <div className="space-y-3">
+                        {socialLinks.map((link) => (
+                            <motion.a
+                                key={link.name}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                whileHover={{ x: 5 }}
+                                onMouseEnter={() => playSound("hover")}
+                                onClick={() => playSound("click")}
+                                className="link-row block"
+                            >
+                                <link.icon size={18} className="text-cyan-400" />
+                                <span className="text-slate-300 font-mono">{link.name}</span>
+                                <span className="link-arrow text-slate-500 ml-auto">→</span>
+                            </motion.a>
+                        ))}
+                    </div>
+                    
+                    {/* Signal status */}
+                    <div className="flex justify-center mt-8">
+                        <span className="online-badge">SIGNAL STRONG</span>
+                    </div>
+                    
+                    {/* Divider */}
+                    <div className="divider-hud my-8" />
+                    
+                    {/* Bottom */}
+                    <div className="text-center text-slate-500 text-sm font-mono">
+                        <p>&copy; {new Date().getFullYear()} Vaibhav Gala</p>
+                    </div>
+                </div>
+            </footer>
+        );
+    }
+
     if (mode === "gui") {
         return (
             <footer id="contact" className="relative z-10 py-12 sm:py-16 mt-20 border-t border-[var(--border-subtle)] bg-[var(--bg-base)]/80 backdrop-blur-xl">
