@@ -116,6 +116,128 @@ function Sun() {
   );
 }
 
+// ─── PLANET SURFACE SHADERS ──────────────────────────────────────────────────
+// Procedural surface detail generated entirely on GPU via value noise + fBm.
+// Types: 0=rocky (craters), 1=gas (bands+storm), 2=ice (cracks+Fresnel), 3=terrestrial (continents+clouds).
+
+const PLANET_VERT = /* glsl */`
+  varying vec3 vPos;
+  varying vec3 vNormal;
+  varying vec3 vViewDir;
+  void main() {
+    vPos     = position;
+    vNormal  = normalize(normalMatrix * normal);
+    vec4 mv  = modelViewMatrix * vec4(position, 1.0);
+    vViewDir = -mv.xyz;
+    gl_Position = projectionMatrix * mv;
+  }
+`;
+
+const PLANET_FRAG = /* glsl */`
+  precision highp float;
+
+  uniform vec3  uBaseColor;
+  uniform float uTime;
+  uniform int   uType;
+
+  varying vec3 vPos;
+  varying vec3 vNormal;
+  varying vec3 vViewDir;
+
+  // ── Value noise helpers ────────────────────────────────────────────────────
+  float hash(vec3 p) {
+    p  = fract(p * vec3(443.897, 441.423, 437.195));
+    p += dot(p, p.yxz + 19.19);
+    return fract(p.x * p.y * p.z);
+  }
+  float vnoise(vec3 p) {
+    vec3 i = floor(p), f = fract(p);
+    vec3 u = f * f * (3.0 - 2.0 * f);
+    return mix(
+      mix(mix(hash(i),           hash(i+vec3(1,0,0)), u.x),
+          mix(hash(i+vec3(0,1,0)), hash(i+vec3(1,1,0)), u.x), u.y),
+      mix(mix(hash(i+vec3(0,0,1)), hash(i+vec3(1,0,1)), u.x),
+          mix(hash(i+vec3(0,1,1)), hash(i+vec3(1,1,1)), u.x), u.y),
+      u.z);
+  }
+  float fbm(vec3 p) {
+    float v = 0.0, a = 0.5;
+    for (int i = 0; i < 6; i++) {
+      v += a * vnoise(p);
+      p  = p * 2.0 + vec3(1.7, 9.2, 3.4);
+      a *= 0.5;
+    }
+    return v;
+  }
+
+  // ── Diffuse lighting (approximate sun at origin) ───────────────────────────
+  float litFactor(vec3 N) {
+    vec3 L = normalize(vec3(-2.5, 1.5, 4.0));
+    return 0.12 + max(dot(N, L), 0.0) * 0.88;
+  }
+
+  void main() {
+    vec3  N   = normalize(vNormal);
+    float lit = litFactor(N);
+    vec3  col;
+
+    // ── Rocky: craters ──────────────────────────────────────────────────────
+    if (uType == 0) {
+      float n    = fbm(vPos * 4.0);
+      float pit  = 1.0 - abs(vnoise(vPos * 14.0 + 3.7) * 2.0 - 1.0);
+      pit        = pow(max(0.0, pit - 0.44), 2.0) * 3.2;
+      float surf = clamp(n * 0.65 + pit * 0.35, 0.0, 1.0);
+      col        = mix(uBaseColor * 0.55, uBaseColor * 1.45, surf);
+    }
+
+    // ── Gas giant: bands + storm ────────────────────────────────────────────
+    else if (uType == 1) {
+      float turb  = fbm(vPos * 2.5 + uTime * 0.018) * 0.35;
+      float band  = sin((vPos.y + turb) * 9.0) * 0.5 + 0.5;
+      float band2 = sin((vPos.y + turb * 0.6) * 21.0) * 0.5 + 0.5;
+      float surf  = band * 0.65 + band2 * 0.35;
+      col         = mix(uBaseColor * 0.72, uBaseColor * 1.38, surf);
+      // Oval storm spot
+      float storm = 1.0 - smoothstep(0.0, 0.28, length(vPos.xz * vec2(1.0, 1.6) - vec2(0.35, 0.08)));
+      col         = mix(col, uBaseColor * 1.65, storm * 0.3);
+    }
+
+    // ── Ice: crack veins + Fresnel sheen ────────────────────────────────────
+    else if (uType == 2) {
+      float n1   = fbm(vPos * 7.0);
+      float n2   = fbm(vPos * 7.0 + vec3(5.2, 1.3, 2.8));
+      float crack = length(vec2(n1 - 0.5, n2 - 0.5));
+      float line  = 1.0 - smoothstep(0.06, 0.20, crack);
+      vec3  ice   = mix(uBaseColor * 1.15, vec3(0.86, 0.95, 1.0), 0.35);
+      vec3  dark  = uBaseColor * 0.28;
+      col         = mix(ice, dark, line);
+      // Fresnel rim sheen
+      vec3  V     = normalize(vViewDir);
+      float fres  = pow(1.0 - max(dot(N, V), 0.0), 3.0) * 0.45;
+      col        += vec3(fres * 0.6, fres * 0.85, fres);
+    }
+
+    // ── Terrestrial: continents + animated clouds ────────────────────────────
+    else {
+      float cont  = fbm(vPos * 2.2) * 0.5 + 0.5;
+      float det   = fbm(vPos * 9.0 + uTime * 0.005) * 0.25;
+      bool  land  = cont > 0.52;
+      vec3  landC = mix(uBaseColor * 1.25, uBaseColor * 0.88, det);
+      vec3  seaC  = mix(uBaseColor * 0.42, uBaseColor * 0.68, det);
+      col         = land ? landC : seaC;
+      float cloud = fbm(vPos * 4.5 + uTime * 0.012);
+      cloud       = smoothstep(0.50, 0.66, cloud);
+      col         = mix(col, vec3(1.0), cloud * 0.44);
+    }
+
+    gl_FragColor = vec4(col * lit, 1.0);
+  }
+`;
+
+const PLANET_TYPE_IDX: Record<PType, number> = {
+  rocky: 0, gas: 1, ice: 2, terrestrial: 3,
+};
+
 // ─── PLANET ──────────────────────────────────────────────────────────────────
 interface PlanetProps {
   distance: number; radius: number; color: string; speed: number; orbitSpeed: number;
@@ -134,16 +256,16 @@ function Planet({
 }: PlanetProps) {
   const groupRef  = useRef<THREE.Group>(null);
   const orbitRef  = useRef<THREE.Group>(null);
+  const matRef    = useRef<THREE.ShaderMaterial>(null);
   const [hovered, setHovered] = useState(false);
 
-  const mat = useMemo(() => {
-    if (type === "gas")         return { roughness: 0.35, metalness: 0.05 };
-    if (type === "ice")         return { roughness: 0.25, metalness: 0.20 };
-    if (type === "terrestrial") return { roughness: 0.60, metalness: 0.05 };
-    return { roughness: 0.92, metalness: 0.00 };
-  }, [type]);
+  const uniforms = useMemo(() => ({
+    uBaseColor: { value: new THREE.Color(color) },
+    uTime:      { value: 0.0 },
+    uType:      { value: PLANET_TYPE_IDX[type ?? "rocky"] },
+  }), [color, type]);
 
-  useFrame(() => {
+  useFrame((state) => {
     if (orbitRef.current) orbitRef.current.rotation.y += orbitSpeed;
     if (groupRef.current) {
       groupRef.current.rotation.y += speed;
@@ -151,6 +273,8 @@ function Planet({
       if (!_planetPos[name]) _planetPos[name] = new THREE.Vector3();
       groupRef.current.getWorldPosition(_planetPos[name]);
     }
+    // Animate cloud bands and ice cracks
+    if (matRef.current) matRef.current.uniforms.uTime.value = state.clock.elapsedTime;
   });
 
   return (
@@ -166,10 +290,15 @@ function Planet({
         onPointerOver={(e) => { e.stopPropagation(); setHovered(true);  document.body.style.cursor = "pointer"; }}
         onPointerOut={()  => {                       setHovered(false); document.body.style.cursor = "auto";    }}
       >
-        {/* Planet body */}
+        {/* Planet body — procedural surface shader */}
         <mesh>
           <sphereGeometry args={[radius, 64, 64]} />
-          <meshStandardMaterial color={color} roughness={mat.roughness} metalness={mat.metalness} />
+          <shaderMaterial
+            ref={matRef}
+            vertexShader={PLANET_VERT}
+            fragmentShader={PLANET_FRAG}
+            uniforms={uniforms}
+          />
         </mesh>
 
         {/* ── Floating label (Feature 2) ─────────────────────────────────── */}
