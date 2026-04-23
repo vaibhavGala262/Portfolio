@@ -30,7 +30,7 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
-    const playSound = (type: "hover" | "click" | "type" | "error" | "success") => {
+    const playSound = (type: "hover" | "click" | "type" | "error" | "success" | "portal") => {
         if (!soundEnabled || !audioCtxRef.current) return;
 
         // Resume context if suspended (browser autoplay policy)

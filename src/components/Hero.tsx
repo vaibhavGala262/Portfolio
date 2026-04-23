@@ -374,44 +374,62 @@ export default function Hero() {
     if (mode === "gui") {
         return (
             <section className="min-h-screen flex flex-col justify-center items-center text-center px-4 relative overflow-hidden">
+                {/* Layered Background Effects */}
+                <div className="absolute inset-0 subtle-grid pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
+                
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="relative z-10 max-w-4xl"
                 >
-                    <motion.div
+                    <motion.div 
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2, duration: 0.5 }}
-                        className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] backdrop-blur-md text-sm font-mono font-medium"
+                        className="mb-8 inline-flex items-center gap-3 px-6 py-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] backdrop-blur-xl group"
                     >
-                        <span className="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse" />
-                        <span className="text-[var(--text-secondary)]">System Developer & Architect</span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-[var(--primary)] animate-pulse shadow-[0_0_10px_var(--primary)]" />
+                        <span className="text-[var(--text-secondary)] text-xs tracking-[0.2em] uppercase font-bold group-hover:text-[var(--primary)] transition-colors">
+                            System Developer & Architect
+                        </span>
                     </motion.div>
-
-                    <GlitchText
-                        text="VAIBHAV GALA"
-                        className="text-7xl md:text-9xl font-bold mb-6 tracking-tight block text-gradient"
-                    />
-
-                    <motion.p
+                    
+                    <motion.h1
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3, duration: 0.6 }}
+                        className="text-7xl md:text-9xl font-black mb-8 tracking-tighter leading-none drop-shadow-2xl"
+                    >
+                        <span className="bg-gradient-to-r from-[var(--primary)] via-[var(--secondary)] to-[var(--accent)] bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">
+                            VAIBHAV GALA
+                        </span>
+                    </motion.h1>
+                    
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4, duration: 0.8 }}
-                        className="text-xl md:text-2xl text-[var(--text-secondary)] max-w-2xl mx-auto font-light leading-relaxed"
+                        transition={{ delay: 0.4 }}
+                        className="relative"
                     >
-                        Building scalable systems with <span className="text-[var(--primary)] font-semibold">Linux</span>, <span className="text-[var(--secondary)] font-semibold">C</span>, and <span className="text-[var(--accent)] font-semibold">Modern Web Tech</span>.
-                    </motion.p>
-
-                    <motion.div
+                        <p className="text-xl md:text-2xl text-[var(--text-secondary)] max-w-3xl mx-auto font-medium leading-relaxed mb-10">
+                            Engineering complex systems with <span className="text-white underline decoration-[var(--primary)] underline-offset-8">Linux Kernel</span>, <span className="text-white underline decoration-[var(--secondary)] underline-offset-8">High Performance C</span>, and <span className="text-white underline decoration-[var(--accent)] underline-offset-8">Architecture-first Web</span>.
+                        </p>
+                    </motion.div>
+                    
+                    <motion.div 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6, duration: 0.6 }}
-                        className="flex flex-wrap justify-center gap-4 mt-10"
+                        className="flex flex-wrap justify-center gap-6 mt-12"
                     >
-                        <a href="#projects" className="btn-glow">View Projects</a>
-                        <a href="#contact" className="btn-ghost">Get In Touch</a>
+                        <a href="#projects" className="px-8 py-4 bg-[var(--primary)] text-black font-bold rounded-xl hover:scale-105 transition-all shadow-[0_0_30px_rgba(34,211,238,0.3)]">
+                            Explored Projects
+                        </a>
+                        <a href="#contact" className="px-8 py-4 border border-[var(--border-subtle)] backdrop-blur-md rounded-xl hover:bg-white/5 transition-all">
+                            Get In Touch
+                        </a>
                     </motion.div>
                 </motion.div>
             </section>
