@@ -533,21 +533,111 @@ function ShootingStars() {
   return null; // all objects are added imperatively to the scene
 }
 
+// ─── FLIGHT CONTROLLER ──────────────────────────────────────────────────────────
+// Press F (a valid user gesture) to request pointer lock and enter first-person flight.
+// WASD / Q/E move the camera; hold Shift for 3× boost. Esc exits via browser pointer-unlock.
+// Uses raw Pointer Lock API — zero extra dependencies.
+function FlightController({
+  active,
+  onEnter,
+  onExit,
+}: {
+  active: boolean;
+  onEnter: () => void;
+  onExit:  () => void;
+}) {
+  const { camera, gl } = useThree();
+  const keysRef = useRef<Record<string, boolean>>({});
+  const fwdRef  = useRef(new THREE.Vector3());
+  const rgtRef  = useRef(new THREE.Vector3());
+
+  // Stable callback refs — prevent useEffect from re-running on every render
+  const onEnterRef = useRef(onEnter);
+  const onExitRef  = useRef(onExit);
+  onEnterRef.current = onEnter;
+  onExitRef.current  = onExit;
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+    camera.rotation.order = 'YXZ'; // FPS yaw/pitch decoupling
+
+    const onKD = (e: KeyboardEvent) => {
+      keysRef.current[e.code] = true;
+      // F key is a valid user gesture — browsers allow requestPointerLock() from keydown
+      if (e.code === 'KeyF' && document.pointerLockElement !== canvas) {
+        canvas.requestPointerLock();
+      }
+    };
+    const onKU = (e: KeyboardEvent) => { keysRef.current[e.code] = false; };
+
+    const onLockChange = () => {
+      if (document.pointerLockElement === canvas) {
+        onEnterRef.current();
+      } else {
+        keysRef.current = {}; // clear held keys on exit
+        onExitRef.current();
+      }
+    };
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (document.pointerLockElement !== canvas) return;
+      const sens = 0.0022;
+      camera.rotation.y -= e.movementX * sens;
+      camera.rotation.x -= e.movementY * sens;
+      // Clamp pitch to avoid upside-down flips
+      camera.rotation.x = THREE.MathUtils.clamp(camera.rotation.x, -Math.PI * 0.45, Math.PI * 0.45);
+    };
+
+    window.addEventListener('keydown',  onKD);
+    window.addEventListener('keyup',    onKU);
+    document.addEventListener('pointerlockchange', onLockChange);
+    document.addEventListener('mousemove',         onMouseMove);
+
+    return () => {
+      window.removeEventListener('keydown',  onKD);
+      window.removeEventListener('keyup',    onKU);
+      document.removeEventListener('pointerlockchange', onLockChange);
+      document.removeEventListener('mousemove',         onMouseMove);
+    };
+  }, [camera, gl]); // stable refs only
+
+  useFrame((_, delta) => {
+    if (!active) return;
+    const keys  = keysRef.current;
+    const speed = (keys['ShiftLeft'] || keys['ShiftRight'] ? 55 : 18) * delta;
+
+    camera.getWorldDirection(fwdRef.current);
+    rgtRef.current.crossVectors(fwdRef.current, camera.up).normalize();
+
+    if (keys['KeyW'] || keys['ArrowUp'])    camera.position.addScaledVector(fwdRef.current,  speed);
+    if (keys['KeyS'] || keys['ArrowDown'])  camera.position.addScaledVector(fwdRef.current, -speed);
+    if (keys['KeyA'] || keys['ArrowLeft'])  camera.position.addScaledVector(rgtRef.current, -speed);
+    if (keys['KeyD'] || keys['ArrowRight']) camera.position.addScaledVector(rgtRef.current,  speed);
+    if (keys['KeyQ'] || keys['Space'])      camera.position.y += speed;
+    if (keys['KeyE'] || keys['ControlLeft'] || keys['ControlRight']) camera.position.y -= speed;
+  });
+
+  return null;
+}
+
 // ─── CAMERA CONTROLLER ───────────────────────────────────────────────────────
 // Feature 1 (fly-in) + Feature 3 (scroll camera) — no external deps, manual lerp.
 function CameraController({
   focused,
   scrollRef,
+  flightActive,
 }: {
-  focused: FocusPlanet | null;
-  scrollRef: React.MutableRefObject<number>;
+  focused:      FocusPlanet | null;
+  scrollRef:    React.MutableRefObject<number>;
+  flightActive: boolean;
 }) {
   const { camera } = useThree();
-  const autoAngle = useRef(0.8);  // current azimuth for cinematic auto-rotation
+  const autoAngle = useRef(0.8);
   const lookAt    = useRef(new THREE.Vector3(0, 0, 0));
   const camTarget = useRef(new THREE.Vector3());
 
   useFrame((_, delta) => {
+    if (flightActive) return; // FlightController owns the camera while in pilot mode
     if (focused) {
       // ── FEATURE 1: Fly the camera to orbit the clicked planet ──────────────
       const pos = _planetPos[focused.name];
@@ -587,15 +677,22 @@ function CameraController({
 
 // ─── SCENE ───────────────────────────────────────────────────────────────────
 function SceneCosmos({
-  focused, scrollRef, onFocus,
+  focused, scrollRef, onFocus, flightMode, onFlightChange,
 }: {
-  focused: FocusPlanet | null;
-  scrollRef: React.MutableRefObject<number>;
-  onFocus: (p: FocusPlanet) => void;
+  focused:         FocusPlanet | null;
+  scrollRef:       React.MutableRefObject<number>;
+  onFocus:         (p: FocusPlanet) => void;
+  flightMode:      boolean;
+  onFlightChange:  (v: boolean) => void;
 }) {
   return (
     <>
-      <CameraController focused={focused} scrollRef={scrollRef} />
+      <FlightController
+        active={flightMode}
+        onEnter={() => onFlightChange(true)}
+        onExit={()  => onFlightChange(false)}
+      />
+      <CameraController focused={focused} scrollRef={scrollRef} flightActive={flightMode} />
       <ambientLight intensity={0.04} />
       <Stars radius={400} depth={120} count={18000} factor={4} saturation={1} fade speed={0.4} />
 
@@ -614,9 +711,9 @@ function SceneCosmos({
         <Planet
           key={p.name}
           {...p}
-          onFocus={onFocus}
+          onFocus={flightMode ? () => {} : onFocus}
           isFocused={focused?.name === p.name}
-          anyFocused={focused !== null}
+          anyFocused={focused !== null || flightMode}
         />
       ))}
 
@@ -719,14 +816,14 @@ function HudPanel({ planet, onClose }: { planet: FocusPlanet; onClose: () => voi
 
 // ─── MAIN EXPORT ─────────────────────────────────────────────────────────────
 export default function CosmosBackground() {
-  const [focused, setFocused] = useState<FocusPlanet | null>(null);
-  const scrollRef  = useRef(0);
+  const [focused,    setFocused]    = useState<FocusPlanet | null>(null);
+  const [flightMode, setFlightMode] = useState(false);
+  const scrollRef = useRef(0);
   const [mounted, setMounted] = useState(false);
 
-  // Wait for client mount before using createPortal
   useEffect(() => { setMounted(true); }, []);
 
-  // Feature 3 — scroll progress tracking (passive, zero jank)
+  // Scroll progress tracking
   useEffect(() => {
     const handler = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -737,63 +834,143 @@ export default function CosmosBackground() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  // Keyboard dismiss
+  // Esc — dismiss planet focus (flight exit is handled by pointerlockchange)
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setFocused(null); };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  // Reset cursor whenever focus is cleared
+  // Cursor cleanup
   useEffect(() => {
     if (!focused) document.body.style.cursor = "auto";
   }, [focused]);
 
   return (
     <>
-      {/* Inject keyframe for HUD slide-in (runs once, no deps on external CSS) */}
       <style>{`
         @keyframes hudSlideIn {
           from { opacity: 0; transform: translateY(-50%) translateX(28px) scale(0.95); }
           to   { opacity: 1; transform: translateY(-50%) translateX(0)     scale(1);   }
         }
+        @keyframes flightFadeIn {
+          from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+          to   { opacity: 1; transform: translateX(-50%) translateY(0);   }
+        }
       `}</style>
 
-      {/* 3D Canvas — stays behind page content (z:-1) */}
+      {/* 3D Canvas */}
       <div className="fixed inset-0 z-[-1]" style={{ pointerEvents: "none" }}>
         <div style={{ width: "100%", height: "100%", pointerEvents: "auto" }}>
           <Canvas
             camera={{ position: [0, 38, 68], fov: 50 }}
             dpr={[1, 1.5]}
-            gl={{
-              antialias: true,
-              alpha: false,
-              toneMapping: THREE.ACESFilmicToneMapping,
-              toneMappingExposure: 0.85,
-            }}
+            gl={{ antialias: true, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.85 }}
             style={{ background: "#000008" }}
-            // Click on empty space → dismiss focus
-            onPointerMissed={() => setFocused(null)}
+            onPointerMissed={() => { if (!flightMode) setFocused(null); }}
           >
-            <SceneCosmos focused={focused} scrollRef={scrollRef} onFocus={setFocused} />
+            <SceneCosmos
+              focused={focused}
+              scrollRef={scrollRef}
+              onFocus={setFocused}
+              flightMode={flightMode}
+              onFlightChange={setFlightMode}
+            />
           </Canvas>
         </div>
       </div>
 
-      {/* Portal: backdrop + HUD panel rendered at document.body to escape z-index constraints */}
-      {mounted && focused && createPortal(
+      {/* ── DOM Overlays (portals) ──────────────────────────────────────────── */}
+      {mounted && createPortal(
         <>
-          {/* Transparent click-away backdrop — sits above every page layer */}
-          <div
-            onClick={() => setFocused(null)}
-            style={{
-              position: "fixed", inset: 0, zIndex: 9998,
-              cursor: "pointer",
-              // Subtle dark vignette to draw attention to the planet
-              background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.35) 100%)",
-            }}
-          />
-          <HudPanel planet={focused} onClose={() => setFocused(null)} />
+          {/* Planet-click HUD */}
+          {focused && !flightMode && (
+            <>
+              <div
+                onClick={() => setFocused(null)}
+                style={{
+                  position: "fixed", inset: 0, zIndex: 9998, cursor: "pointer",
+                  background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.35) 100%)",
+                }}
+              />
+              <HudPanel planet={focused} onClose={() => setFocused(null)} />
+            </>
+          )}
+
+          {/* Flight mode HUD */}
+          {flightMode && (
+            <>
+              {/* Crosshair */}
+              <div style={{
+                position: "fixed", top: "50%", left: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: 9999, pointerEvents: "none",
+              }}>
+                <div style={{ position: "relative", width: 24, height: 24 }}>
+                  <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: 1, background: "rgba(6,182,212,0.8)", transform: "translateY(-50%)" }} />
+                  <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: "rgba(6,182,212,0.8)", transform: "translateX(-50%)" }} />
+                  <div style={{ position: "absolute", top: "50%", left: "50%", width: 3, height: 3, background: "#06b6d4", borderRadius: "50%", transform: "translate(-50%,-50%)", boxShadow: "0 0 6px #06b6d4" }} />
+                </div>
+              </div>
+
+              {/* Mode label */}
+              <div style={{
+                position: "fixed", top: "1.25rem", left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 9999, pointerEvents: "none",
+                fontFamily: "monospace", fontSize: "0.65rem", letterSpacing: "0.2em",
+                color: "#06b6d4", background: "rgba(0,0,10,0.75)",
+                border: "1px solid rgba(6,182,212,0.3)",
+                padding: "5px 14px", borderRadius: 999,
+                backdropFilter: "blur(10px)",
+                animation: "flightFadeIn 0.35s ease forwards",
+              }}>
+                ⚡ PILOT MODE  ·  ESC TO EXIT
+              </div>
+
+              {/* Controls bar */}
+              <div style={{
+                position: "fixed", bottom: "1.5rem", left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 9999, pointerEvents: "none",
+                display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center",
+                animation: "flightFadeIn 0.4s ease 0.1s both",
+              }}>
+                {[
+                  ["W / S", "FORWARD / BACK"],
+                  ["A / D", "STRAFE"],
+                  ["Q / E", "UP / DOWN"],
+                  ["SHIFT", "3× BOOST"],
+                ].map(([key, label]) => (
+                  <div key={key} style={{
+                    display: "flex", alignItems: "center", gap: "0.4rem",
+                    background: "rgba(0,0,10,0.82)", border: "1px solid rgba(6,182,212,0.2)",
+                    borderRadius: 6, padding: "4px 10px",
+                    backdropFilter: "blur(8px)",
+                  }}>
+                    <span style={{ fontFamily: "monospace", fontSize: "0.65rem", color: "#06b6d4", fontWeight: 700 }}>{key}</span>
+                    <span style={{ fontFamily: "monospace", fontSize: "0.6rem",  color: "#475569" }}>{label}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* "Press F" hint — shown when idle (not focused, not in flight) */}
+          {!flightMode && !focused && (
+            <div style={{
+              position: "fixed", bottom: "1.5rem", right: "1.5rem",
+              zIndex: 50, pointerEvents: "none",
+              fontFamily: "monospace", fontSize: "0.65rem", letterSpacing: "0.12em",
+              color: "rgba(6,182,212,0.45)",
+              background: "rgba(0,0,10,0.5)",
+              border: "1px solid rgba(6,182,212,0.12)",
+              padding: "5px 12px", borderRadius: 999,
+              backdropFilter: "blur(6px)",
+            }}>
+              F — PILOT MODE
+            </div>
+          )}
         </>,
         document.body,
       )}
