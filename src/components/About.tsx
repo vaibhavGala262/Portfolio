@@ -16,24 +16,21 @@ export default function About() {
                         transition={{ duration: 0.8 }}
                         className="glass-hud p-6 md:p-8"
                     >
-                        <span className="hud-label mb-4 block">ABOUT_SYSTEM.LOG</span>
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl md:text-5xl font-bold glow-heading tracking-tight">
+                                About Me
+                            </h2>
+                        </div>
                         
                         <div className="flex flex-col md:flex-row gap-8 items-start">
-                            {/* Avatar with cyan ring */}
-                            <div className="flex-shrink-0">
+                             {/* Avatar with cyan ring */}
+                             <div className="flex-shrink-0 mx-auto md:mx-0">
                                 <div className="avatar-ring bg-slate-800 flex items-center justify-center">
                                     <span className="text-3xl">👨‍🚀</span>
                                 </div>
                             </div>
-                            
-                            {/* Bio */}
+
                             <div className="flex-1 space-y-4">
-                                <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                                    <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-                                        About Me
-                                    </span>
-                                </h2>
-                                
                                 <p className="text-slate-300 leading-relaxed">
                                     <span className="text-cyan-400 font-semibold">I never give up — consistency is my core trait.</span>
                                 </p>

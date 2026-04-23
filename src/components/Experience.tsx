@@ -34,9 +34,8 @@ export default function Experience() {
         return (
             <section id="experience" className="py-24 px-4 relative z-10">
                 <div className="max-w-4xl mx-auto">
-                    <div className="text-center mb-12">
-                        <span className="hud-label">MISSION_LOGS</span>
-                        <h2 className="text-3xl md:text-4xl font-bold mt-4 glow-heading">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl md:text-5xl font-bold glow-heading tracking-tight">
                             Experience
                         </h2>
                     </div>
@@ -53,12 +52,6 @@ export default function Experience() {
                                 transition={{ delay: idx * 0.1 }}
                                 className="glass-hud p-5 mb-6 relative"
                             >
-                                {/* Mission label */}
-                                <div className="flex items-center gap-2 mb-3">
-                                    <span className="hud-label">MISSION_0{idx + 1}</span>
-                                    <span className="text-cyan-400">▸</span>
-                                </div>
-                                
                                 {/* Role */}
                                 <h3 className="text-xl font-semibold mb-1">
                                     <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">

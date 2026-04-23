@@ -16,6 +16,7 @@ const THEMES: Record<ColorTheme, { primary: string; secondary: string }> = {
 interface ThemeContextType {
     mode: ThemeMode;
     toggleMode: () => void;
+    setMode: (mode: ThemeMode) => void;
     colorTheme: ColorTheme;
     setColorTheme: (theme: ColorTheme) => void;
 }
@@ -37,7 +38,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const currentColors = THEMES[colorTheme];
 
     return (
-        <ThemeContext.Provider value={{ mode, toggleMode, colorTheme, setColorTheme }}>
+        <ThemeContext.Provider value={{ mode, toggleMode, setMode, colorTheme, setColorTheme }}>
             <div
                 data-mode={mode}
                 data-theme={colorTheme}

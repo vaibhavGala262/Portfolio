@@ -54,9 +54,8 @@ export default function Projects() {
         return (
             <section id="projects" className="py-24 px-4 relative z-10">
                 <div className="max-w-5xl mx-auto">
-                    <div className="text-center mb-12">
-                        <span className="hud-label">MISSION_LOGS</span>
-                        <h2 className="text-3xl md:text-4xl font-bold mt-4 glow-heading">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl md:text-5xl font-bold glow-heading tracking-tight">
                             Selected Works
                         </h2>
                     </div>
