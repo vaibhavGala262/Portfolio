@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from "react";
 
 interface SoundContextType {
-    playSound: (type: "hover" | "click" | "type" | "error" | "success") => void;
+    playSound: (type: "hover" | "click" | "type" | "error" | "success" | "portal") => void;
     soundEnabled: boolean;
     toggleSound: () => void;
 }
@@ -30,7 +30,7 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
-    const playSound = (type: "hover" | "click" | "type" | "error" | "success") => {
+    const playSound = (type: "hover" | "click" | "type" | "error" | "success" | "portal") => {
         if (!soundEnabled || !audioCtxRef.current) return;
 
         // Resume context if suspended (browser autoplay policy)
@@ -95,6 +95,41 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
                 gainNode.gain.linearRampToValueAtTime(0, now + 0.2);
                 osc.start(now);
                 osc.stop(now + 0.2);
+                break;
+            case "portal":
+                // Layer 1: The Glitch (Buzzy Sawtooth)
+                osc.type = "sawtooth";
+                osc.frequency.setValueAtTime(100, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.5);
+                gainNode.gain.setValueAtTime(0.2, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.start(now);
+                osc.stop(now + 0.5);
+
+                // Layer 2: The Deep Bass (Sub sine)
+                const sub = audioCtxRef.current.createOscillator();
+                const subGain = audioCtxRef.current.createGain();
+                sub.connect(subGain);
+                subGain.connect(audioCtxRef.current.destination);
+                sub.type = "sine";
+                sub.frequency.setValueAtTime(60, now);
+                sub.frequency.exponentialRampToValueAtTime(30, now + 0.8);
+                subGain.gain.setValueAtTime(0.3, now);
+                subGain.gain.linearRampToValueAtTime(0, now + 0.8);
+                sub.start(now);
+                sub.stop(now + 0.8);
+
+                // Layer 3: High-frequency "Digital Spark"
+                const spark = audioCtxRef.current.createOscillator();
+                const sparkGain = audioCtxRef.current.createGain();
+                spark.connect(sparkGain);
+                sparkGain.connect(audioCtxRef.current.destination);
+                spark.type = "square";
+                spark.frequency.setValueAtTime(1500, now);
+                sparkGain.gain.setValueAtTime(0.05, now);
+                sparkGain.gain.linearRampToValueAtTime(0, now + 0.1);
+                spark.start(now);
+                spark.stop(now + 0.1);
                 break;
         }
     };
