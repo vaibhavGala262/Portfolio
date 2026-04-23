@@ -8,27 +8,52 @@ export default function About() {
 
     if (mode === "gui") {
         return (
-            <section id="about" className="py-20 px-4 relative z-10">
-                <div className="max-w-4xl mx-auto">
+            <section id="about" className="py-24 px-4 relative z-10">
+                <div className="max-w-3xl mx-auto">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl shadow-2xl"
+                        className="glass-card p-8 md:p-10"
                     >
-                        <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] bg-clip-text text-transparent">
+                        <motion.h2 
+                            initial={{ opacity: 0, y: -10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            className="text-3xl md:text-4xl font-bold mb-8 text-center text-gradient"
+                        >
                             About Me
-                        </h2>
-                        <div className="space-y-6 text-lg leading-relaxed text-gray-300 font-light">
-                            <p>
-                                <strong className="text-white font-semibold">I never give up ; consistency is my core trait.</strong>
-                            </p>
-                            <p>
-                                I loved Physics, Chemistry, Maths and JEE during school. Now, I am deeply into coding, Linux, system programming, and backend engineering.
-                            </p>
-                            <p>
-                                I enjoy building things from scratch : shells, servers, full-stack apps, etc. I am a big fan of Linux, terminals, open-source, C, and Rust-style low-level thinking.
-                            </p>
+                        </motion.h2>
+                        
+                        <div className="space-y-6 text-lg leading-relaxed text-[var(--text-secondary)] font-light">
+                            <motion.p 
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.1 }}
+                            >
+                                <span className="text-[var(--primary)] font-semibold">I never give up — consistency is my core trait.</span>
+                            </motion.p>
+                            <motion.p 
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.2 }}
+                            >
+                                I loved Physics, Chemistry, Maths, and JEE during school. Now, I'm deeply into coding, Linux, system programming, and backend engineering.
+                            </motion.p>
+                            <motion.p 
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.3 }}
+                            >
+                                I enjoy building things from scratch — shells, servers, full-stack apps. I'm a big fan of Linux, terminals, open-source, C, and Rust-style low-level thinking.
+                            </motion.p>
+                            <motion.p 
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                                className="text-[var(--secondary)] italic pt-4 border-t border-[var(--border-subtle)]"
+                            >
+                                "Talk is cheap. Show me the code." — <span className="not-italic">Linus Torvalds</span>
+                            </motion.p>
                         </div>
                     </motion.div>
                 </div>
