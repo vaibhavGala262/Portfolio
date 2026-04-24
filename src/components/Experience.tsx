@@ -177,76 +177,132 @@ export default function Experience() {
     }
 
     return (
-        <section id="experience" className="py-20 px-4 md:px-20 max-w-5xl mx-auto">
-
-            {/* Work Experience Terminal */}
-            <div className="mb-12">
-                <div className="mb-6 flex items-center gap-2">
-                    <span className="text-terminal-cyan">➜</span>
-                    <span className="text-terminal-green">~</span>
-                    <span className="text-white">cat experience.txt</span>
+        <section id="experience" className="py-24 px-4 md:px-20 max-w-5xl mx-auto space-y-12">
+            
+            {/* Work Experience Window */}
+            <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
+                className="bg-[#0a0a0a]/90 backdrop-blur-xl border border-terminal-cyan/20 rounded-xl overflow-hidden shadow-[0_0_40px_rgba(34,211,238,0.05)] relative group"
+            >
+                <div className="absolute inset-0 bg-gradient-to-br from-terminal-cyan/5 via-transparent to-purple-500/5 pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
+                
+                {/* Terminal Toolbar */}
+                <div className="bg-[#111] border-b border-terminal-cyan/20 px-4 py-3 flex items-center justify-between relative z-10">
+                    <div className="flex gap-2.5">
+                        <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.5)] border border-red-500/50"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500/80 shadow-[0_0_10px_rgba(234,179,8,0.5)] border border-yellow-500/50"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500/80 shadow-[0_0_10px_rgba(34,197,94,0.5)] border border-green-500/50"></div>
+                    </div>
+                    <div className="text-terminal-muted text-xs font-mono opacity-70 tracking-widest">
+                        vaibhav@portfolio:~
+                    </div>
+                    <div className="w-12"></div>
                 </div>
 
-                <div className="space-y-4 font-mono">
-                    {workExperience.map((exp, idx) => (
-                        <div key={idx} className="border border-terminal-muted/30 p-4 hover:bg-white/5 transition-colors">
-                            <div className="flex justify-between text-terminal-green mb-2">
-                                <span>{exp.role} @ {exp.company}</span>
-                                <span className="text-terminal-muted">{exp.period}</span>
-                            </div>
-                            <div className="text-terminal-muted text-sm">{exp.description}</div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+                {/* Terminal Body */}
+                <div className="p-6 md:p-8 font-mono text-sm md:text-base selection:bg-terminal-cyan/30 relative z-10">
+                    <div className="flex items-center gap-2 mb-8">
+                        <span className="text-terminal-green font-bold shadow-terminal-green/50">vaibhav@portfolio</span>
+                        <span className="text-white">:</span>
+                        <span className="text-blue-400 font-bold">~</span>
+                        <span className="text-white">$</span>
+                        <span className="text-terminal-cyan ml-2 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">cat</span>
+                        <span className="text-white">experience.log</span>
+                        <span className="w-2.5 h-5 bg-terminal-green/80 animate-pulse ml-1 shadow-[0_0_8px_rgba(74,222,128,0.8)]"></span>
+                    </div>
 
-            {/* Achievements */}
-            <div>
-                <div className="mb-6 flex items-center gap-2">
-                    <span className="text-terminal-cyan">➜</span>
-                    <span className="text-terminal-green">~</span>
-                    <span className="text-white">./show_achievements.sh --all</span>
+                    <div className="pl-4 border-l border-terminal-cyan/20 ml-2 space-y-8">
+                        {workExperience.map((exp, idx) => (
+                            <motion.div 
+                                key={idx}
+                                initial={{ opacity: 0, x: -10 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.2 + idx * 0.1 }}
+                                className="group/exp relative"
+                            >
+                                <div className="absolute -left-[21px] top-3 w-2 h-2 rounded-full bg-terminal-cyan/30 group-hover/exp:bg-terminal-green shadow-[0_0_10px_rgba(74,222,128,0)] group-hover/exp:shadow-[0_0_10px_rgba(74,222,128,0.8)] transition-all duration-300"></div>
+                                <div className="text-terminal-cyan/50 text-xs mb-2 uppercase tracking-widest font-bold">0{idx + 1} // {exp.period}</div>
+                                
+                                <div className="bg-white/5 p-5 rounded-r-md border-l-2 border-transparent group-hover/exp:border-terminal-green transition-all duration-300 hover:bg-terminal-green/5">
+                                    <h3 className="text-lg font-bold text-slate-200 group-hover/exp:text-white flex items-center gap-2">
+                                        <span className="text-terminal-green opacity-0 group-hover/exp:opacity-100 transition-opacity">➜</span>
+                                        {exp.role} @ <span className="text-terminal-cyan">{exp.company}</span>
+                                    </h3>
+                                    <div className="text-terminal-muted mt-3 space-y-1.5 font-light pl-6 group-hover/exp:pl-8 transition-all duration-300">
+                                        <p>&gt; {exp.description}</p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </motion.div>
+
+            {/* Achievements Window */}
+            <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+                className="bg-[#0a0a0a]/90 backdrop-blur-xl border border-terminal-cyan/20 rounded-xl overflow-hidden shadow-[0_0_40px_rgba(34,211,238,0.05)] relative group"
+            >
+                <div className="absolute inset-0 bg-gradient-to-br from-terminal-cyan/5 via-transparent to-purple-500/5 pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
+                
+                {/* Terminal Toolbar */}
+                <div className="bg-[#111] border-b border-terminal-cyan/20 px-4 py-3 flex items-center justify-between relative z-10">
+                    <div className="flex gap-2.5">
+                        <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.5)] border border-red-500/50"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500/80 shadow-[0_0_10px_rgba(234,179,8,0.5)] border border-yellow-500/50"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500/80 shadow-[0_0_10px_rgba(34,197,94,0.5)] border border-green-500/50"></div>
+                    </div>
+                    <div className="text-terminal-muted text-xs font-mono opacity-70 tracking-widest">
+                        vaibhav@portfolio:~
+                    </div>
+                    <div className="w-12"></div>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left font-mono border-collapse border border-terminal-muted/30">
-                        <thead>
-                            <tr className="bg-terminal-border/50 text-terminal-green">
-                                <th className="p-3 border-b border-terminal-muted/30">ID</th>
-                                <th className="p-3 border-b border-terminal-muted/30">Achievement</th>
-                                <th className="p-3 border-b border-terminal-muted/30">Stats/Rank</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-sm">
-                            <tr className="hover:bg-white/5 transition-colors">
-                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-muted">0x01</td>
-                                <td className="p-3 border-b border-terminal-muted/30">JEE Main 2023</td>
-                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-cyan">AIR 6934 (99.4%ile)</td>
-                            </tr>
-                            <tr className="hover:bg-white/5 transition-colors">
-                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-muted">0x02</td>
-                                <td className="p-3 border-b border-terminal-muted/30">JEE Advanced 2023</td>
-                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-cyan">AIR 11640</td>
-                            </tr>
-                            <tr className="hover:bg-white/5 transition-colors">
-                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-muted">0x03</td>
-                                <td className="p-3 border-b border-terminal-muted/30">Operating Systems</td>
-                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-cyan">99/100 (Highest in batch)</td>
-                            </tr>
-                            <tr className="hover:bg-white/5 transition-colors">
-                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-muted">0x04</td>
-                                <td className="p-3 border-b border-terminal-muted/30">CodeChef Rating</td>
-                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-cyan">3-Star (1627)</td>
-                            </tr>
-                            <tr className="hover:bg-white/5 transition-colors">
-                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-muted">0x05</td>
-                                <td className="p-3 border-b border-terminal-muted/30">LeetCode Solved</td>
-                                <td className="p-3 border-b border-terminal-muted/30 text-terminal-cyan">400+ Problems</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                {/* Terminal Body */}
+                <div className="p-6 md:p-8 font-mono text-sm md:text-base selection:bg-terminal-cyan/30 relative z-10">
+                    <div className="flex items-center gap-2 mb-8">
+                        <span className="text-terminal-green font-bold shadow-terminal-green/50">vaibhav@portfolio</span>
+                        <span className="text-white">:</span>
+                        <span className="text-blue-400 font-bold">~</span>
+                        <span className="text-white">$</span>
+                        <span className="text-terminal-cyan ml-2 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">./show_achievements.sh</span>
+                        <span className="text-terminal-muted ml-1">--all</span>
+                        <span className="w-2.5 h-5 bg-terminal-green/80 animate-pulse ml-1 shadow-[0_0_8px_rgba(74,222,128,0.8)]"></span>
+                    </div>
+
+                    <div className="overflow-x-auto border border-terminal-cyan/20 rounded-lg">
+                        <table className="w-full text-left font-mono border-collapse">
+                            <thead>
+                                <tr className="bg-terminal-cyan/10 border-b border-terminal-cyan/20 text-terminal-cyan/80 text-xs uppercase tracking-widest font-bold">
+                                    <th className="p-4">ID</th>
+                                    <th className="p-4">Achievement</th>
+                                    <th className="p-4">Stats/Rank</th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-sm">
+                                {achievements.map((item, idx) => (
+                                    <tr key={idx} className="border-b border-terminal-cyan/5 hover:bg-terminal-cyan/5 transition-colors group/row">
+                                        <td className="p-4 text-terminal-muted group-hover/row:text-white transition-colors">0x0{idx + 1}</td>
+                                        <td className="p-4 flex items-center gap-3">
+                                            <span className="text-xl group-hover/row:scale-110 transition-transform">{item.icon}</span>
+                                            <span className="text-slate-300 group-hover/row:text-white transition-colors">{item.title}</span>
+                                        </td>
+                                        <td className="p-4 text-terminal-cyan group-hover/row:text-terminal-green transition-colors drop-shadow-[0_0_2px_rgba(34,211,238,0.5)]">
+                                            {item.desc}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            </motion.div>
         </section>
     );
 }
