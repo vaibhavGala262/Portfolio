@@ -5,11 +5,13 @@ import { SoundProvider } from "@/context/SoundContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuroraBackground from "@/components/AuroraBackground";
-import CosmosBackground from "@/components/CosmosBackground";
 import CursorAura from "@/components/CursorAura";
 import GlitchPortal from "@/components/GlitchPortal";
 import { useTheme } from "@/context/ThemeContext";
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+
+const CosmosBackground = dynamic(() => import("@/components/CosmosBackground"), { ssr: false });
 
 function ClientLayout({ children }: { children: React.ReactNode }) {
     const { mode } = useTheme();

@@ -36,7 +36,7 @@ export default function Footer() {
                 <div className="max-w-4xl mx-auto px-4">
                     {/* HUD Label */}
                     <div className="text-center mb-8">
-                        <span className="hud-label">ESTABLISH_COMMS</span>
+
                         <h2 className="text-2xl md:text-3xl font-bold mt-4 glow-heading">
                             Contact
                         </h2>
