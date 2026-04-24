@@ -42,9 +42,6 @@ const COMMANDS = {
       <td class="py-1 px-2 text-white font-bold">neofetch</td><td class="py-1 px-2">System information</td>
     </tr>
     <tr class="border-b border-terminal-cyan/10 hover:bg-terminal-cyan/10">
-      <td class="py-1 px-2 text-white font-bold">theme</td><td class="py-1 px-2">theme [green|red|purple|gold|blue]</td>
-    </tr>
-    <tr class="border-b border-terminal-cyan/10 hover:bg-terminal-cyan/10">
       <td class="py-1 px-2 text-white font-bold">matrix</td><td class="py-1 px-2">Wake up, Neo...</td>
     </tr>
     <tr class="border-b border-terminal-cyan/10 hover:bg-terminal-cyan/10">
@@ -294,7 +291,7 @@ accept_and_serve();
 };
 
 export default function Hero() {
-    const { mode, setMode, setColorTheme } = useTheme();
+    const { mode, setMode } = useTheme();
     const { playSound } = useSound();
     const [input, setInput] = useState("");
     const [history, setHistory] = useState<string[]>([]);
@@ -415,7 +412,7 @@ export default function Hero() {
                     }
                 }
                 setHistory(prev => [...prev, `> ${input}`, output || "(empty)"]);
-            } else if (command === "theme") {
+            } else if (command === "touch") {
                 const filename = args[1];
                 if (filename) {
                     setFileSystem(prev => ({ ...prev, [filename]: "" }));
